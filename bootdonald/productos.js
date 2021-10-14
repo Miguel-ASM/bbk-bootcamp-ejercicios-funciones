@@ -1,4 +1,4 @@
-letproductos = {
+let productos = {
     menus: {
         'Grand Big Boot': 8.5,
         'Big Boot': 8,
