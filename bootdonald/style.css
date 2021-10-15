@@ -1,0 +1,17 @@
+*{
+    box-sizing: border-box;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+.contenedor-productos{
+    display: flex;
+    ;background-color: grey;
+}
+
+.product-selected{
+    background-color: green;
+    color: white;
+}
