@@ -4,10 +4,12 @@
 let app = document.querySelector('#app');
 let divPrincipal;
 let divCarrito;
+let divFinalizarPedido;
 
 // array que contiene todos los items añadidos al pedido
 let itemActual = {};
 let pedido = [];
+
 
 // Variable con el total del carrito
 let totalPedido = 0;
@@ -28,8 +30,8 @@ initPage();
 
 
 function crearHtmlOpciones(eleccion){
-    let productTypes;
     let askForFries = false;
+    let productTypes;
     switch (eleccion){
         case menu:
             productTypes = [menu,drink];
@@ -69,6 +71,38 @@ function crearHtmlOpciones(eleccion){
             console.log(itemActual);
         });
     }
+
+    // Add a button to add the items to the chart, initially disabled
+    // until the choices of products are valid.
+    let addToChartButtonDiv = document.createElement('div');
+    addToChartButtonDiv.innerHTML = `
+        <button id="go-back-button">
+            VOLVER
+        </button>
+        <button id="add-to-chart-button" disabled="disabled">
+            AÑADIR
+        </button>
+    `;
+    divPrincipal.appendChild(addToChartButtonDiv);
+    document.querySelector('#go-back-button').addEventListener('click',()=>{
+        // clear the itemActual of products.
+        itemActual = {};
+        // repintar el html de las opciones de tipo de producto
+        crearHtmlTipoDeProducto();
+    });
+    document.querySelector('#add-to-chart-button').addEventListener('click',()=>{
+        // push itemActual into pedido array
+        pedido.push(itemActual);
+        // clear the itemActual of products.
+        itemActual = {};
+        // recalcular totalPedido
+        totalPedido = calcularTotalPedido();
+        // añadir totalPedido al texto del carrito
+        divCarrito.innerHTML = ` Total: ${totalPedido} €`
+        // repintar el html de las opciones de tipo de producto
+        crearHtmlTipoDeProducto();
+    });
+
     for (let div of divPrincipal.querySelectorAll('.contenedor-productos')){
         // console.log(div);
         for (let productDiv of div.querySelectorAll('button')){
@@ -77,6 +111,10 @@ function crearHtmlOpciones(eleccion){
                 event.currentTarget.classList.add('product-selected');
                 itemActual[event.currentTarget.name] = event.currentTarget.value;
                 console.log(itemActual);
+                // activate or disactivate the add-to-chart-button
+                console.log(productTypes.map(element => element in itemActual));
+                let disableAddToChartButton = productTypes.map(element => element in itemActual).indexOf(false) >= 0;
+                document.querySelector('#add-to-chart-button').disabled = disableAddToChartButton;
             })   
         }
     }
@@ -108,7 +146,7 @@ function crearHtmlPagina() {
     <div id="div-opciones-menus-productos-principal">
         <button id="boton-iniciar-pedido">Hacer un pedido</button>
     </div>
-    <div totalPedido="0" id="carrito"> Total: ${totalPedido} €</div>
+    <div id="carrito"> Total: ${totalPedido} €</div>
     `
     divPrincipal = document.querySelector('#div-opciones-menus-productos-principal');
     divCarrito   = document.querySelector('#carrito');
@@ -124,6 +162,15 @@ function crearHtmlTipoDeProducto() {
         divPrincipal.appendChild(button);
         button.addEventListener('click',()=>{crearHtmlOpciones(productType)});
     }
+    // añadir un boton para finalizar el pedido si hay algo en el carrito
+    if(pedido.length > 0){
+        divFinalizarPedido = document.createElement('div');
+        divFinalizarPedido.innerHTML = `
+        <button>FINALIZAR PEDIDO</button>
+        `;
+        divPrincipal.appendChild(divFinalizarPedido);
+    }
+    
 }
 
 // Inicializar la página
@@ -141,18 +188,18 @@ function initPage() {
 // Precio de un item del pedido
 function calcularSubTotal(item) {
     if (menu in item){
-        return productos.menus[item.menu];
+        return productos.menus[item[menu]];
     } else if (burger in item){
-        return productos.burgers[item.burger] + ( (fries in item) ? productos.fries : 0);
+        return productos.burgers[item[burger]] + ( (fries in item) ? productos.fries : 0);
     } else if ( drink in item ){
-        return productos.drinks[item.drink];
+        return productos.drinks[item[drink]];
     } else{
         alert('Invalid item' + item);
     }
 }
 
 // Precio total del pedido
-function calcularTotalPedido(pedido){
+function calcularTotalPedido(){
     let total = 0;
     for (let i = 0; i < pedido.length; i++) {
         total += calcularSubTotal( pedido[i] );
