@@ -1,17 +1,50 @@
 *{
     box-sizing: border-box;
 }
+/* :root{
+    -
+} */
+
+html, body{
+    width: 100%;
+    margin:0;
+}
 
 button:hover{
     cursor: pointer;
 }
 
+button:disabled{
+    cursor: default;
+}
+
+button.product-button:hover{
+    box-shadow: 5px 10px 8px #888888;
+}
+
 .contenedor-productos{
     display: flex;
-    ;background-color: grey;
+    background-color: grey;
 }
 
 .product-selected{
     background-color: green;
     color: white;
+}
+
+#app{
+    width: 90%;
+    min-height: 100vh;
+    padding: 2em;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#carrito{
+    justify-self: stretch;
+    text-align: right;
+    width: 80%;
 }

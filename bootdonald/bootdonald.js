@@ -70,7 +70,7 @@ function addToCart(){
     // recalcular totalPedido
     totalPedido = calcularTotalPedido();
     // añadir totalPedido al texto del carrito
-    divCarrito.innerHTML = ` Total: ${totalPedido} €`
+    divCarrito.innerHTML = `<p>Total: ${totalPedido} €</p>`;
     // repintar el html de las opciones de tipo de producto
     crearHtmlEleccionTipoDeProducto();
 }
@@ -104,7 +104,7 @@ function goToCart(){
 function removeItemFromCart(event,item){
     console.log(pedido.splice(pedido.indexOf(item),1));
     totalPedido = calcularTotalPedido();
-    divCarrito.innerHTML = `Total: ${totalPedido} €`;
+    divCarrito.innerHTML = `<p>Total: ${totalPedido} €</p>`;
     document.querySelector('.big-price').innerHTML = `<p>Total: ${totalPedido} €</p>`
     if (pedido.length ===0){
         goBackToMainPage();
@@ -167,12 +167,12 @@ function calcularTotalPedido(){
 // Crea el html inicial de la página y inicializa sus elementos
 function crearHtmlPagina() {
     app.innerHTML = `
-    <div id="div-opciones-menus-productos-principal">
+    <div id="div-contenido-principal">
         <button id="boton-iniciar-pedido">Hacer un pedido</button>
     </div>
     <div id="carrito"> Total: ${totalPedido} €</div>
     `
-    divPrincipal = document.querySelector('#div-opciones-menus-productos-principal');
+    divPrincipal = document.querySelector('#div-contenido-principal');
     divCarrito   = document.querySelector('#carrito');
 }
 
@@ -270,6 +270,7 @@ function createProductButtonHtml(productType,product,price=true) {
     let priceTag = (price) ? `<p>${productos[productType][product]}  €</p>` : ''
     let button = document.createElement('button');
     button.innerHTML = `<p class="product-name">${product}</p>` + priceTag;
+    button.classList.add('product-button');
     return button;
 }
 
